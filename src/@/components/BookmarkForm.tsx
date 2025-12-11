@@ -148,14 +148,20 @@ const BookmarkForm = () => {
   });
 
   const { handleSubmit, control } = form;
-
   useEffect(() => {
     getCurrentTabInfo().then(({ url, title }) => {
-      getConfig().then(() => {
+      getConfig().then((config) => {
         url = url ? url : '';
         title = title ? title : '';
         form.setValue('url', url);
-        form.setValue('content', `# ${title}\n- [Source](${encodeURL(url)})`);
+      
+        // NEU: Template aus Config verwenden
+        const content = fillContentTemplate(
+          config.contentTemplate || DEFAULT_CONTENT_TEMPLATE,
+          title,
+          url
+        );
+        form.setValue('content', content);
       });
     });
     const getConfigUse = async () => {
