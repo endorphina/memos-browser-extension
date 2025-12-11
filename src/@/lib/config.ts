@@ -41,3 +41,38 @@ export async function clearConfig() {
         })
     );
 }
+
+export interface Config {
+  baseUrl: string;
+  apiKey: string;
+  user: string;
+  defaultVisibility: { name: string };
+  contentTemplate: string; // NEU: Template für Memo-Inhalt
+}
+
+// Standard-Template als Konstante
+export const DEFAULT_CONTENT_TEMPLATE = '# {title}\n- [Source]({url})';
+
+// Beim Laden der Config den Default-Wert setzen
+export async function getConfig(): Promise {
+  const result = await browser.storage.local.get([
+    'baseUrl',
+    'apiKey',
+    'user',
+    'defaultVisibility',
+    'contentTemplate', // NEU
+  ]);
+  
+  return {
+    baseUrl: result.baseUrl || '',
+    apiKey: result.apiKey || '',
+    user: result.user || '',
+    defaultVisibility: result.defaultVisibility || { name: 'Public' },
+    contentTemplate: result.contentTemplate || DEFAULT_CONTENT_TEMPLATE, // NEU
+  };
+}
+
+// Funktion zum Speichern der Config
+export async function saveConfig(config: Partial): Promise {
+  await browser.storage.local.set(config);
+}
