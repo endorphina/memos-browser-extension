@@ -347,4 +347,66 @@ const OptionsForm = () => {
     );
 };
 
+import { useState, useEffect } from 'react';
+import { getConfig, saveConfig, DEFAULT_CONTENT_TEMPLATE } from '../lib/config';
+
+function Settings() {
+  const [contentTemplate, setContentTemplate] = useState(DEFAULT_CONTENT_TEMPLATE);
+  
+  useEffect(() => {
+    getConfig().then((config) => {
+      setContentTemplate(config.contentTemplate || DEFAULT_CONTENT_TEMPLATE);
+    });
+  }, []);
+  
+  const handleSave = async () => {
+    await saveConfig({ contentTemplate });
+    // Erfolgsbenachrichtigung anzeigen
+  };
+  
+  const handleReset = () => {
+    setContentTemplate(DEFAULT_CONTENT_TEMPLATE);
+  };
+  
+  return (
+    
+      
+        Content Template
+        
+          <Textarea
+            value={contentTemplate}
+            onChange={(e) => setContentTemplate(e.target.value)}
+            placeholder="Enter your content template..."
+            rows={4}
+          />
+        
+        
+          Available placeholders:
+          
+            {'{title}'} - Current page title
+            {'{url}'} - Current page URL
+          
+          
+            Note: Keep the URL in the second line for context menu options to work correctly.
+          
+        
+      
+      
+      
+        Save Template
+        
+          Reset to Default
+        
+      
+      
+      
+        Preview:
+        
+          {fillContentTemplate(contentTemplate, 'Example Page Title', 'https://example.com')}
+        
+      
+    
+  );
+}
+
 export default OptionsForm;
