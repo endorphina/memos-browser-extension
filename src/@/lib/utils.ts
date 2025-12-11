@@ -85,3 +85,14 @@ export async function executeScript(tabId: number, func: any, args: any[] = []) 
   }
 }
 
+export function fillContentTemplate(
+  template: string,
+  title: string,
+  url: string
+): string {
+  return template
+    .replace(/{title}/g, title)
+    .replace(/{url}/g, encodeURL(url))
+    .replace(/\\n/g, '\n'); // Erlaubt \n im Template
+}
+
